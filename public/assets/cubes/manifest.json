@@ -1,0 +1,565 @@
+{
+  "scramble": "B' U' R2 F' R' D L D L2 U B F B D2 L B R2 U F' L U2 B2",
+  "steps": [
+    {
+      "id": 1,
+      "title": "White Daisy",
+      "goal": "A purple centre on top with 4 white edges around it — like a daisy.",
+      "moves": [
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "L2",
+          "instruction": "Turn the LEFT face 180°"
+        },
+        {
+          "move": "B",
+          "instruction": "Turn the BACK face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "L",
+          "instruction": "Turn the LEFT face clockwise"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "White Cross",
+      "goal": "The white cross on the bottom, each edge matching its side centre.",
+      "moves": [
+        {
+          "move": "F2",
+          "instruction": "Turn the FRONT face 180°"
+        },
+        {
+          "move": "R2",
+          "instruction": "Turn the RIGHT face 180°"
+        },
+        {
+          "move": "B2",
+          "instruction": "Turn the BACK face 180°"
+        },
+        {
+          "move": "L2",
+          "instruction": "Turn the LEFT face 180°"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "First Layer",
+      "goal": "The whole white face done, with the side colours matching. 1/3 solved.",
+      "moves": [
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "B'",
+          "instruction": "Turn the BACK face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "B",
+          "instruction": "Turn the BACK face clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "R2",
+          "instruction": "Turn the RIGHT face 180°"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "L'",
+          "instruction": "Turn the LEFT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "L",
+          "instruction": "Turn the LEFT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "L'",
+          "instruction": "Turn the LEFT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "L",
+          "instruction": "Turn the LEFT face clockwise"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Second Layer",
+      "goal": "The first two layers complete. 2/3 solved.",
+      "moves": [
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "B'",
+          "instruction": "Turn the BACK face counter-clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "B",
+          "instruction": "Turn the BACK face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "L",
+          "instruction": "Turn the LEFT face clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "L'",
+          "instruction": "Turn the LEFT face counter-clockwise"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "B",
+          "instruction": "Turn the BACK face clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "B'",
+          "instruction": "Turn the BACK face counter-clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "F'",
+          "instruction": "Turn the FRONT face counter-clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "F",
+          "instruction": "Turn the FRONT face clockwise"
+        },
+        {
+          "move": "y'",
+          "instruction": "Rotate the WHOLE cube (y')"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "F'",
+          "instruction": "Turn the FRONT face counter-clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "F",
+          "instruction": "Turn the FRONT face clockwise"
+        },
+        {
+          "move": "y",
+          "instruction": "Rotate the WHOLE cube (y)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Purple Cross",
+      "goal": "A purple cross formed on top.",
+      "moves": [
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "F",
+          "instruction": "Turn the FRONT face clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "F'",
+          "instruction": "Turn the FRONT face counter-clockwise"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Purple Face",
+      "goal": "The whole purple face closed on top.",
+      "moves": [
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Corners",
+      "goal": "All last-layer corners in their correct places.",
+      "moves": [
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "F",
+          "instruction": "Turn the FRONT face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "B2",
+          "instruction": "Turn the BACK face 180°"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "F'",
+          "instruction": "Turn the FRONT face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "B2",
+          "instruction": "Turn the BACK face 180°"
+        },
+        {
+          "move": "R2",
+          "instruction": "Turn the RIGHT face 180°"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "F",
+          "instruction": "Turn the FRONT face clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "B2",
+          "instruction": "Turn the BACK face 180°"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "F'",
+          "instruction": "Turn the FRONT face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "B2",
+          "instruction": "Turn the BACK face 180°"
+        },
+        {
+          "move": "R2",
+          "instruction": "Turn the RIGHT face 180°"
+        },
+        {
+          "move": "U",
+          "instruction": "Turn the TOP face clockwise"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Final Edges",
+      "goal": "The cube is 100% solved!",
+      "moves": [
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        },
+        {
+          "move": "F2",
+          "instruction": "Turn the FRONT face 180°"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "R'",
+          "instruction": "Turn the RIGHT face counter-clockwise"
+        },
+        {
+          "move": "L",
+          "instruction": "Turn the LEFT face clockwise"
+        },
+        {
+          "move": "F2",
+          "instruction": "Turn the FRONT face 180°"
+        },
+        {
+          "move": "R",
+          "instruction": "Turn the RIGHT face clockwise"
+        },
+        {
+          "move": "L'",
+          "instruction": "Turn the LEFT face counter-clockwise"
+        },
+        {
+          "move": "U'",
+          "instruction": "Turn the TOP face counter-clockwise"
+        },
+        {
+          "move": "F2",
+          "instruction": "Turn the FRONT face 180°"
+        },
+        {
+          "move": "U2",
+          "instruction": "Turn the TOP face 180°"
+        }
+      ]
+    }
+  ]
+}

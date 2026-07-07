@@ -1,0 +1,19 @@
+{
+  "name": "theocube",
+  "version": "1.0.0",
+  "description": "Theo's Rubik Cube App - image generator",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "generate": "node generate-cubes.js"
+  },
+  "dependencies": {
+    "sr-puzzlegen": "^1.0.4"
+  },
+  "devDependencies": {
+    "cubejs": "^1.3.2",
+    "jsdom": "^29.1.1",
+    "rubiks-cube-solver": "^1.2.0"
+  }
+}

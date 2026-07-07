@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 476 128" width="476" height="128" role="img" aria-label="Theo's Rubik Cube">
+  <rect x="0" y="0" width="476" height="128" rx="22" fill="#0f172a"/>
+  <g stroke="#0b1220" stroke-width="0.6" stroke-linejoin="round">
+    <polygon points="60.0,20.0 108.0,47.0 60.0,74.0 12.0,47.0" fill="#0b1220" />
+    <polygon points="60.0,21.4 73.4,29.0 60.0,36.6 46.6,29.0" fill="#F7D02C" />
+    <polygon points="76.0,30.4 89.4,38.0 76.0,45.6 62.6,38.0" fill="#1E5AC8" />
+    <polygon points="92.0,39.4 105.4,47.0 92.0,54.6 78.6,47.0" fill="#D42A2A" />
+    <polygon points="44.0,30.4 57.4,38.0 44.0,45.6 30.6,38.0" fill="#F08A24" />
+    <polygon points="60.0,39.4 73.4,47.0 60.0,54.6 46.6,47.0" fill="#FDFDFD" />
+    <polygon points="76.0,48.4 89.4,56.0 76.0,63.6 62.6,56.0" fill="#1F9E57" />
+    <polygon points="28.0,39.4 41.4,47.0 28.0,54.6 14.6,47.0" fill="#D42A2A" />
+    <polygon points="44.0,48.4 57.4,56.0 44.0,63.6 30.6,56.0" fill="#F7D02C" />
+    <polygon points="60.0,57.4 73.4,65.0 60.0,72.6 46.6,65.0" fill="#9B1FC1" />
+    <polygon points="12.0,47.0 60.0,74.0 60.0,119.0 12.0,92.0" fill="#0b1220" />
+    <polygon points="13.3,48.9 26.7,56.5 26.7,69.1 13.3,61.5" fill="#1E5AC8" />
+    <polygon points="29.3,57.9 42.7,65.5 42.7,78.1 29.3,70.5" fill="#1F9E57" />
+    <polygon points="45.3,66.9 58.7,74.5 58.7,87.1 45.3,79.5" fill="#FDFDFD" />
+    <polygon points="13.3,63.9 26.7,71.5 26.7,84.1 13.3,76.5" fill="#D42A2A" />
+    <polygon points="29.3,72.9 42.7,80.5 42.7,93.1 29.3,85.5" fill="#1E5AC8" />
+    <polygon points="45.3,81.9 58.7,89.5 58.7,102.1 45.3,94.5" fill="#F08A24" />
+    <polygon points="13.3,78.9 26.7,86.5 26.7,99.1 13.3,91.5" fill="#1F9E57" />
+    <polygon points="29.3,87.9 42.7,95.5 42.7,108.1 29.3,100.5" fill="#F7D02C" />
+    <polygon points="45.3,96.9 58.7,104.5 58.7,117.1 45.3,109.5" fill="#1E5AC8" />
+    <polygon points="108.0,47.0 60.0,74.0 60.0,119.0 108.0,92.0" fill="#0b1220" />
+    <polygon points="106.7,48.9 93.3,56.5 93.3,69.1 106.7,61.5" fill="#D42A2A" />
+    <polygon points="90.7,57.9 77.3,65.5 77.3,78.1 90.7,70.5" fill="#F08A24" />
+    <polygon points="74.7,66.9 61.3,74.5 61.3,87.1 74.7,79.5" fill="#F7D02C" />
+    <polygon points="106.7,63.9 93.3,71.5 93.3,84.1 106.7,76.5" fill="#9B1FC1" />
+    <polygon points="90.7,72.9 77.3,80.5 77.3,93.1 90.7,85.5" fill="#D42A2A" />
+    <polygon points="74.7,81.9 61.3,89.5 61.3,102.1 74.7,94.5" fill="#FDFDFD" />
+    <polygon points="106.7,78.9 93.3,86.5 93.3,99.1 106.7,91.5" fill="#F08A24" />
+    <polygon points="90.7,87.9 77.3,95.5 77.3,108.1 90.7,100.5" fill="#1F9E57" />
+    <polygon points="74.7,96.9 61.3,104.5 61.3,117.1 74.7,109.5" fill="#D42A2A" />
+  </g>
+  <text x="150" y="60" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="46" letter-spacing="1.5" fill="#ffffff">THEO&#39;S</text>
+  <text x="152" y="97" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="27" letter-spacing="7" fill="#e2e8f0">RUBIK CUBE</text>
+</svg>

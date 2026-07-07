@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theo's Rubik Cube App</title>
+    <meta
+      name="description"
+      content="Learn the layer method to solve a Rubik's Cube in 8 visual steps."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230f172a'/%3E%3Cg fill='none' stroke='%23fbbf24' stroke-width='8'%3E%3Crect x='24' y='24' width='52' height='52' rx='6'/%3E%3Cline x1='50' y1='24' x2='50' y2='76'/%3E%3Cline x1='24' y1='50' x2='76' y2='50'/%3E%3C/g%3E%3C/svg%3E"
+    />
+    <style>
+      /* Move strip / thumbnails */
+      #frame-strip {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        /* top/bottom padding so the raised active border is never clipped */
+        padding: 6px 2px;
+      }
+      .frame-thumb {
+        flex: 0 0 auto;
+        width: 66px;
+        border: 2px solid transparent;
+        border-radius: 0.6rem;
+        background: #fff;
+        padding: 2px;
+        transition: transform 0.1s, border-color 0.1s;
+      }
+      .frame-thumb img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: contain;
+        display: block;
+      }
+      .frame-thumb span {
+        display: block;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        font-family: ui-monospace, monospace;
+        color: #64748b;
+        margin-top: 1px;
+      }
+      .frame-thumb.active {
+        border-color: #f59e0b;
+        transform: translateY(-2px);
+      }
+      .frame-thumb.active span {
+        color: #b45309;
+      }
+      .move-badge {
+        display: inline-block;
+        font-family: ui-monospace, monospace;
+        font-weight: 800;
+        background: #fef3c7;
+        color: #b45309;
+        border-radius: 0.4rem;
+        padding: 1px 8px;
+      }
+      .cube3d-box {
+        touch-action: none;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+    <!-- Offscreen renderer used only to render thumbnail snapshots -->
+    <div id="thumb-factory" style="position: absolute; width: 110px; height: 110px; left: -9999px; top: -9999px"></div>
+    <!-- ===================== HEADER ===================== -->
+    <header class="bg-slate-900 text-white shadow-lg">
+      <div
+        class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3"
+      >
+        <a href="." class="flex items-center">
+          <img
+            src="assets/logo.svg"
+            alt="Theo's Rubik Cube"
+            class="h-9 sm:h-10 w-auto"
+          />
+          <h1 class="sr-only">Theo's Rubik Cube App</h1>
+        </a>
+        <div class="flex items-center gap-2">
+          <button
+            id="btn-shuffle"
+            title="New random scramble"
+            aria-label="New random scramble"
+            class="w-9 h-9 shrink-0 rounded-full bg-slate-700 hover:bg-slate-600 text-white text-base active:scale-95 transition"
+          >
+            🔀
+          </button>
+          <span
+            id="step-counter"
+            class="text-xs sm:text-sm font-semibold bg-amber-400 text-slate-900 rounded-full px-3 py-1 whitespace-nowrap"
+          >
+            Step 1 of 8
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===================== LOADING ===================== -->
+    <div
+      id="loading"
+      class="flex-1 flex flex-col items-center justify-center gap-5 text-slate-500 px-6"
+    >
+      <img
+        src="assets/logo.svg"
+        alt="Theo's Rubik Cube"
+        class="w-full max-w-[320px]"
+      />
+      <div class="flex items-center gap-2">
+        <span class="text-2xl animate-spin" aria-hidden="true">🧩</span>
+        <p class="text-sm font-semibold">Shuffling a new cube and solving it…</p>
+      </div>
+    </div>
+
+    <!-- ===================== CONTENT ===================== -->
+    <main id="app" class="hidden flex-1 max-w-3xl w-full mx-auto px-4 py-6 pb-28">
+      <!-- Step title -->
+      <h2
+        id="step-title"
+        class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4"
+      ></h2>
+
+      <!-- GOAL: 3D image of the target state -->
+      <section class="mb-6">
+        <p
+          class="text-xs uppercase tracking-widest text-amber-600 font-bold mb-2 flex items-center gap-1"
+        >
+          <span aria-hidden="true">🎯</span> Goal
+        </p>
+        <figure
+          class="bg-white rounded-2xl shadow-md ring-1 ring-slate-200 p-4 flex flex-col items-center"
+        >
+          <div
+            id="goal3d"
+            class="cube3d-box w-full max-w-[320px] aspect-square"
+          ></div>
+          <p class="text-[11px] text-slate-400 mt-1">
+            🖐️ Drag to rotate • scroll to zoom
+          </p>
+          <figcaption
+            id="step-goal"
+            class="text-sm text-slate-600 text-center mt-3 leading-relaxed"
+          ></figcaption>
+        </figure>
+      </section>
+
+      <!-- TECHNIQUE reminder -->
+      <section class="mb-6">
+        <p
+          class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2 flex items-center gap-1"
+        >
+          <span aria-hidden="true">📝</span> Technique
+        </p>
+        <div
+          id="step-tip"
+          class="text-sm font-semibold text-slate-700 bg-amber-100 border-l-4 border-amber-400 rounded-r-lg px-3 py-2"
+        ></div>
+      </section>
+
+      <!-- FOLLOW THE MOVES: one 3D snapshot per move -->
+      <section>
+        <p
+          class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2 flex items-center gap-1"
+        >
+          <span aria-hidden="true">🔄</span> Follow the moves
+        </p>
+        <figure
+          class="bg-white rounded-2xl shadow-md ring-1 ring-slate-200 p-4 flex flex-col items-center"
+        >
+          <div
+            id="frame3d"
+            class="cube3d-box w-full max-w-[280px] aspect-square"
+          ></div>
+          <p class="text-[11px] text-slate-400 mt-1">
+            🖐️ Drag to rotate • scroll to zoom
+          </p>
+
+          <!-- Player controls -->
+          <div class="flex items-center justify-center gap-3 mt-3 w-full">
+            <button
+              id="frame-prev"
+              aria-label="Previous move"
+              class="w-11 h-11 shrink-0 rounded-full bg-slate-200 text-slate-800 text-lg font-bold active:scale-95 transition disabled:opacity-40 disabled:active:scale-100"
+            >
+              ◀
+            </button>
+            <div
+              id="frame-label"
+              class="flex-1 text-center text-sm text-slate-700"
+            ></div>
+            <button
+              id="frame-next"
+              aria-label="Next move"
+              class="w-11 h-11 shrink-0 rounded-full bg-amber-400 text-slate-900 text-lg font-bold active:scale-95 transition disabled:opacity-40 disabled:active:scale-100"
+            >
+              ▶
+            </button>
+          </div>
+
+          <!-- Thumbnail strip of every move -->
+          <div id="frame-strip" class="mt-4 w-full"></div>
+          <p class="text-xs text-slate-400 mt-1">
+            Tap a frame, use ◀ ▶, or press A / D to step through the moves.
+          </p>
+        </figure>
+      </section>
+    </main>
+
+    <!-- ===================== FIXED NAV ===================== -->
+    <footer
+      class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200"
+    >
+      <div class="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
+        <button
+          id="btn-prev"
+          class="flex-1 py-3 rounded-xl font-bold bg-slate-200 text-slate-800 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+        >
+          ← Back
+        </button>
+        <button
+          id="btn-next"
+          class="flex-1 py-3 rounded-xl font-bold bg-amber-400 text-slate-900 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+        >
+          Next →
+        </button>
+      </div>
+    </footer>
+
+    <script src="vendor/cubejs.js"></script>
+    <script src="js/solver.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
