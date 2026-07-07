@@ -85,20 +85,23 @@ function arcGeometry(face, clockwise) {
 // One tube + cone at the given radii/color/renderOrder. Drawing this once in
 // black (fatter, behind) and once in yellow (thinner, in front) gives the
 // arrow a solid black outline so it reads on any sticker colour.
+//
+// depthTest:true lets the opaque cube (drawn first, writes depth) occlude the
+// arrow, so when the target face is rotated to the back the arrow disappears
+// behind the cube instead of floating in front. depthWrite:false keeps the two
+// arrow layers from occluding each other, so painter order (renderOrder) alone
+// decides that yellow paints over black — the outline survives.
 function arrowLayer(curve, tip, tangent, { color, tubeR, coneR, coneH, renderOrder }) {
   const layer = new THREE.Group();
+  const mat = () => new THREE.MeshBasicMaterial({
+    color, depthTest: true, depthWrite: false, transparent: true,
+  });
 
-  const tube = new THREE.Mesh(
-    new THREE.TubeGeometry(curve, 32, tubeR, 10, false),
-    new THREE.MeshBasicMaterial({ color, depthTest: false })
-  );
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 32, tubeR, 10, false), mat());
   tube.renderOrder = renderOrder;
   layer.add(tube);
 
-  const cone = new THREE.Mesh(
-    new THREE.ConeGeometry(coneR, coneH, 14),
-    new THREE.MeshBasicMaterial({ color, depthTest: false })
-  );
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(coneR, coneH, 14), mat());
   cone.position.copy(tip).addScaledVector(tangent, 0.1);
   cone.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent);
   cone.renderOrder = renderOrder;
