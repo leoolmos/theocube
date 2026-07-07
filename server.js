@@ -1,6 +1,6 @@
 /**
  * Servidor estático mínimo (zero dependências) para rodar o site localmente.
- * Serve a pasta public/ em http://localhost:PORT.
+ * Serve a pasta docs/ em http://localhost:PORT.
  *
  * Uso:  npm start   (ou: node server.js)
  */
@@ -10,7 +10,7 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 4321;
-const ROOT = path.join(__dirname, "public");
+const ROOT = path.join(__dirname, "docs");
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split("?")[0]);
   if (urlPath === "/") urlPath = "/index.html";
 
-  // Impede path traversal para fora de public/.
+  // Impede path traversal para fora de docs/.
   const filePath = path.join(ROOT, path.normalize(urlPath));
   if (!filePath.startsWith(ROOT)) {
     res.writeHead(403);

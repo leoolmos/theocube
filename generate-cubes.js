@@ -97,7 +97,7 @@ function randomScramble(n = 22) {
 
 // --- Main --------------------------------------------------------------------
 function main() {
-  const outDir = path.join(__dirname, "public", "assets", "cubes");
+  const outDir = path.join(__dirname, "docs", "assets", "cubes");
   fs.mkdirSync(outDir, { recursive: true });
   // clear old svgs
   for (const f of fs.readdirSync(outDir)) if (f.endsWith(".svg")) fs.unlinkSync(path.join(outDir, f));
