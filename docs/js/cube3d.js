@@ -125,9 +125,20 @@ function buildArrowGroup(face, clockwise) {
 }
 
 // setTimeout-based tick instead of requestAnimationFrame: rAF is throttled to
-// (near-)never on hidden/background tabs, which would silently freeze both
-// the render loop and any in-flight move animation's Promise forever.
+// (near-)never on hidden/background tabs, which would silently freeze an
+// in-flight move animation's Promise forever.
 const tick = (fn) => setTimeout(fn, 16);
+
+// Free a group's GPU resources (geometries + materials) before dropping it.
+function disposeGroup(group) {
+  group.traverse((o) => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) {
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach((m) => m.dispose());
+    }
+  });
+}
 
 export class RubiksCube3D {
   constructor(container, { interactive = true, cameraDistance = 10.5 } = {}) {
@@ -177,11 +188,12 @@ export class RubiksCube3D {
       }
     }
 
+    this._renderScheduled = false;
     if (interactive) this._enableDrag();
-    this._raf = tick(() => this._loop());
     this._resizeObserver = new ResizeObserver(() => this.resize());
     this._resizeObserver.observe(container);
     this.resize();
+    this.requestRender();
   }
 
   _updateCamera() {
@@ -209,6 +221,7 @@ export class RubiksCube3D {
       this.theta -= dx * 0.008;
       this.phi = Math.min(Math.PI - 0.2, Math.max(0.2, this.phi - dy * 0.008));
       this._updateCamera();
+      this.requestRender();
     });
     const stop = (e) => { dragging = false; el.style.cursor = "grab"; };
     el.addEventListener("pointerup", stop);
@@ -218,6 +231,7 @@ export class RubiksCube3D {
       e.preventDefault();
       this.radius = Math.min(18, Math.max(7, this.radius + e.deltaY * 0.006));
       this._updateCamera();
+      this.requestRender();
     }, { passive: false });
   }
 
@@ -227,11 +241,21 @@ export class RubiksCube3D {
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(w, h, false);
+    this.requestRender();
   }
 
-  _loop() {
+  // Render once. On-demand only — there is no perpetual loop, so an idle cube
+  // costs nothing. Every mutator (setState, camera drag/zoom, arrow, resize)
+  // asks for a frame via requestRender(); playMove drives its own frames.
+  render() {
     this.renderer.render(this.scene, this.camera);
-    this._raf = tick(() => this._loop());
+  }
+
+  // Coalesce many mutations in one tick into a single render.
+  requestRender() {
+    if (this._renderScheduled) return;
+    this._renderScheduled = true;
+    this._raf = tick(() => { this._renderScheduled = false; this.render(); });
   }
 
   /** Recolor every sticker from a cubejs facelet string. No animation. */
@@ -245,6 +269,7 @@ export class RubiksCube3D {
         mats[slot].color.set(idx === -1 ? PLASTIC : STICKER_HEX[facelets[idx]]);
       }
     }
+    this.requestRender();
   }
 
   /** Show a curved arrow on `token`'s face pointing in its true turn direction. */
@@ -255,12 +280,15 @@ export class RubiksCube3D {
     if ("xyz".includes(face)) return; // whole-cube rotation: no single face to mark
     this._arrow = buildArrowGroup(face, suffix !== "'");
     this.scene.add(this._arrow);
+    this.requestRender();
   }
 
   clearMoveArrow() {
     if (this._arrow) {
       this.scene.remove(this._arrow);
+      disposeGroup(this._arrow); // free GPU geometry/materials — else it leaks per step
       this._arrow = null;
+      this.requestRender();
     }
   }
 
@@ -285,8 +313,9 @@ export class RubiksCube3D {
         const t = Math.min(1, (now - t0) / duration);
         const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
         pivot.quaternion.setFromAxisAngle(axis, target * eased);
+        this.render(); // drive each animation frame directly
         if (t < 1) {
-          tick(step);
+          tick(() => step(performance.now()));
         } else {
           for (const c of affected) {
             this.scene.attach(c);
@@ -294,11 +323,11 @@ export class RubiksCube3D {
             c.quaternion.identity();
           }
           this.scene.remove(pivot);
-          this.setState(nextFacelets);
+          this.setState(nextFacelets); // requestRender inside
           resolve();
         }
       };
-      tick(step);
+      step(performance.now());
     });
   }
 
