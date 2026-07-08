@@ -370,14 +370,15 @@ function solve(scramble) {
   });
 
   sv.phase("llCorners", (b) => {
+    // Beginner video uses only the Ab perm. Ab² = Aa so all cases are reachable
+    // within 2 applications. Headlights (2 matching corners on one face) at BACK.
     const cornersExact = () => ["URF", "UFL", "ULB", "UBR"].every((c) =>
       [sv.s()[CORNERS[c][0]], sv.s()[CORNERS[c][1]], sv.s()[CORNERS[c][2]]].sort().join("") ===
       CORNER_COLORS[c].split("").sort().join(""));
     const cornersOkAUF = () => AUF.some((su) => { sv.do(su); const ok = cornersExact(); sv.undo(su); return ok; });
     const keep = [() => sv.ollDone()];
-    const Aa = "R' F R' B2 R F' R' B2 R2";
     const Ab = "R B' R F2 R' B R F2 R2";
-    const algs = [Aa, Ab, Aa + " U " + Aa, Aa + " U' " + Aa, Aa + " U2 " + Aa, Aa + " " + Aa];
+    const algs = [Ab, Ab + " U " + Ab, Ab + " U' " + Ab, Ab + " U2 " + Ab, Ab + " " + Ab];
     sv.attempt(cornersOkAUF, keep, algs, AUF, b);
     for (const su of AUF) { sv.do(su, b); if (cornersExact()) return; sv.undo(su, b); }
   });

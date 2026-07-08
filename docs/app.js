@@ -74,22 +74,21 @@ const TIPS = [
     lead: "Cycle the top corners into their correct slots. Purple is already up — now fix the SIDE colours.",
     steps: [
       "Look at the SIDE stickers of each top corner. Each corner belongs in the slot where its 2 side colours match the 2 nearby centres.",
-      "Find 'headlights': look at each face — two adjacent top corners show the SAME colour on that face. Those are the headlights.",
-      "No headlights visible? Apply Algorithm A once from any position — headlights will appear.",
-      "Hold the headlights facing the BACK. The remaining corners need to cycle left or right.",
-      "Cycle counter-clockwise (← left): use Algorithm A. Cycle clockwise (right →): use Algorithm B.",
-      "Not sure which direction? Try A. If still not solved, turn U once and check; or switch to B from the same position.",
-      "When all corner side colours match their centres, turn U to align the top layer.",
+      "Find 'headlights': look at each side face — two adjacent top corners on the same face show the SAME colour. Those are the headlights.",
+      "No headlights visible? Apply the algorithm once from any position — headlights will appear. Then find them and continue.",
+      "Hold the headlights facing the BACK, then apply the algorithm.",
+      "Check the corners. If still not correct, apply the algorithm once more from the same position.",
+      "When all corner side colours match their centres, turn U to align the top layer perfectly.",
     ],
   },
   {
-    lead: "Cycle the 4 top edges to finish the cube. One edge usually stays fixed — the other three rotate around it.",
+    lead: "Cycle the 3 remaining top edges to finish the cube. One edge is already correct — hold it at the BACK.",
     steps: [
-      "Look at the 4 top-layer side edges. Find one that already matches the centre colour below it — hold that face TOWARD YOU (front). That edge stays put.",
-      "If no edge matches yet: apply either algorithm once, then find the matching edge and reposition.",
-      "The algorithm cycles the RIGHT, BACK, and LEFT edges — the front edge never moves.",
-      "Edges moving clockwise (right →): use Algorithm A. Edges moving counter-clockwise (← left): use Algorithm B.",
-      "After the algorithm, turn U to align the top — the cube is solved!",
+      "Look at the 4 top-layer side edges. Find one that already matches the centre colour below it.",
+      "Hold that face at the BACK. The 3 other edges (front, right, left) will cycle.",
+      "If no edge matches: apply either algorithm once, then find the matching edge, reposition it to the back, and apply again.",
+      "Edges cycle clockwise (right →): use Algorithm A.  Edges cycle counter-clockwise (← left): use Algorithm B.",
+      "After the algorithm, turn U to align the top layer — the cube is solved!",
     ],
   },
 ];
@@ -125,16 +124,15 @@ const ALGS = [
       { label: "Sune — fish at FRONT-RIGHT (repeat until full face)", moves: "R U R' U R U2 R'" },
     ],
   },
-  {     // step 7 — corners: A-perm and mirror
+  {     // step 7 — corners: only the Ab perm (as in the beginner video)
     variants: [
-      { label: "Algorithm A — cycle counter-clockwise ← (headlights at BACK)", moves: "R' F R' B2 R F' R' B2 R2" },
-      { label: "Algorithm B — cycle clockwise → (headlights at BACK)",         moves: "R B' R F2 R' B R F2 R2"  },
+      { label: "Algorithm — headlights at BACK (apply once or twice until solved)", moves: "R B' R F2 R' B R F2 R2" },
     ],
   },
-  {     // step 8 — final edges: two cycle directions
+  {     // step 8 — final edges: completed face at BACK, two cycle directions
     variants: [
-      { label: "Algorithm A — cycle right → (front edge stays)", moves: "F2 U R' L F2 R L' U F2"  },
-      { label: "Algorithm B — cycle left ← (front edge stays)",  moves: "F2 U' R' L F2 R L' U' F2" },
+      { label: "Algorithm A — cycle clockwise →  (matching edge at BACK)", moves: "F2 U L R' F2 L' R U F2"  },
+      { label: "Algorithm B — cycle counter-clockwise ←  (matching edge at BACK)", moves: "F2 U' L R' F2 L' R U' F2" },
     ],
   },
 ];
