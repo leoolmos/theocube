@@ -61,29 +61,80 @@ const TIPS = [
     ],
   },
   {
-    lead: "Complete the top face: flip all 4 corners purple-side up using the Sune (R U R' U R U2 R').",
+    lead: "Flip all 4 top corners purple-side up using the Sune. Keep going until the whole top face is purple.",
     steps: [
-      "Look only at the corners of the top face. Count how many have purple pointing STRAIGHT UP.",
-      "If one corner has purple pointing up (the 'fish'): hold that corner at the FRONT-RIGHT, then apply the Sune.",
-      "If no corner has purple pointing up: apply the Sune once from any position, then re-check.",
-      "After each Sune, adjust the top (U) if needed and repeat until all 4 corners are purple on top.",
+      "Look ONLY at the 4 top corners. Count how many have purple pointing STRAIGHT UP (flat on top, not sideways).",
+      "0 purple up → apply the Sune once from any position, then re-count.",
+      "1 purple up — this is the FISH. Rotate the cube until that corner sits at the FRONT-RIGHT. You will also see 2 more purples sticking out to the right — those are the fish fins. Apply the Sune.",
+      "2 purple up → apply the Sune once from any position. A new pattern will appear. Find the fish, reposition, apply again.",
+      "After every Sune, re-count top-corner purples. Adjust U if needed and repeat. Takes 1–4 Sunes. Done when all 4 corners show purple on top.",
     ],
   },
   {
-    lead: "Put the corners in their correct spots (colours on the sides can still be off).",
+    lead: "Cycle the top corners into their correct slots. Purple is already up — now fix the SIDE colours.",
     steps: [
-      "Look at the side corners and find two that already match — the 'headlights'.",
-      "Hold the headlights at the BACK.",
-      "Apply the corner-cycle algorithm to rotate the other corners into place.",
+      "Look at the SIDE stickers of each top corner. Each corner belongs in the slot where its 2 side colours match the 2 nearby centres.",
+      "Find 'headlights': look at each face — two adjacent top corners show the SAME colour on that face. Those are the headlights.",
+      "No headlights visible? Apply Algorithm A once from any position — headlights will appear.",
+      "Hold the headlights facing the BACK. The remaining corners need to cycle left or right.",
+      "Cycle counter-clockwise (← left): use Algorithm A. Cycle clockwise (right →): use Algorithm B.",
+      "Not sure which direction? Try A. If still not solved, turn U once and check; or switch to B from the same position.",
+      "When all corner side colours match their centres, turn U to align the top layer.",
     ],
   },
   {
-    lead: "Last move: cycle the 4 side edges to finish the cube.",
+    lead: "Cycle the 4 top edges to finish the cube. One edge usually stays fixed — the other three rotate around it.",
     steps: [
-      "Only the top-layer edges are left to swap — the middle layer is already done.",
-      "Look at the 4 side centres on the top layer. Find the face whose edge already matches its centre (if any) — hold that face toward you.",
-      "Apply the algorithm. Then turn the top and check if the cube is solved.",
-      "Not solved? Apply the algorithm again from the same position.",
+      "Look at the 4 top-layer side edges. Find one that already matches the centre colour below it — hold that face TOWARD YOU (front). That edge stays put.",
+      "If no edge matches yet: apply either algorithm once, then find the matching edge and reposition.",
+      "The algorithm cycles the RIGHT, BACK, and LEFT edges — the front edge never moves.",
+      "Edges moving clockwise (right →): use Algorithm A. Edges moving counter-clockwise (← left): use Algorithm B.",
+      "After the algorithm, turn U to align the top — the cube is solved!",
+    ],
+  },
+];
+
+// Fixed algorithm reference shown beneath the technique description.
+// Each entry maps to the same index as TIPS. null = no fixed alg for that step.
+// Colours match the 3D renderer sticker palette from cube3d.js.
+const FACE_COLOR = {
+  U: { bg: "#9b1fc1", fg: "#ffffff" },
+  R: { bg: "#d42a2a", fg: "#ffffff" },
+  F: { bg: "#1e5ac8", fg: "#ffffff" },
+  D: { bg: "#e2e8f0", fg: "#1e293b" },
+  L: { bg: "#f08a24", fg: "#ffffff" },
+  B: { bg: "#1f9e57", fg: "#ffffff" },
+};
+const ALGS = [
+  null, // step 1 — daisy (intuitive)
+  null, // step 2 — cross (intuitive)
+  null, // step 3 — first layer (intuitive)
+  {     // step 4 — second layer: two insert directions
+    variants: [
+      { label: "Edge goes RIGHT →", moves: "U R U' R' U' F' U F" },
+      { label: "Edge goes LEFT ←",  moves: "U' L' U L U F U' F'" },
+    ],
+  },
+  {     // step 5 — purple cross
+    variants: [
+      { label: "Cross algorithm (repeat until cross appears)", moves: "F R U R' U' F'" },
+    ],
+  },
+  {     // step 6 — purple face: Sune only
+    variants: [
+      { label: "Sune — fish at FRONT-RIGHT (repeat until full face)", moves: "R U R' U R U2 R'" },
+    ],
+  },
+  {     // step 7 — corners: A-perm and mirror
+    variants: [
+      { label: "Algorithm A — cycle counter-clockwise ← (headlights at BACK)", moves: "R' F R' B2 R F' R' B2 R2" },
+      { label: "Algorithm B — cycle clockwise → (headlights at BACK)",         moves: "R B' R F2 R' B R F2 R2"  },
+    ],
+  },
+  {     // step 8 — final edges: two cycle directions
+    variants: [
+      { label: "Algorithm A — cycle right → (front edge stays)", moves: "F2 U R' L F2 R L' U F2"  },
+      { label: "Algorithm B — cycle left ← (front edge stays)",  moves: "F2 U' R' L F2 R L' U' F2" },
     ],
   },
 ];
@@ -183,6 +234,8 @@ const el = {
   title: document.getElementById("step-title"),
   goal: document.getElementById("step-goal"),
   tip: document.getElementById("step-tip"),
+  algSection: document.getElementById("alg-section"),
+  algBox: document.getElementById("alg-box"),
   segLabel: document.getElementById("seg-label"),
   frameLabel: document.getElementById("frame-label"),
   framePrev: document.getElementById("frame-prev"),
@@ -241,12 +294,45 @@ function renderTip(tip) {
   }
 }
 
+// Renders the algorithm reference box: one row of colour-coded chips per variant.
+function renderAlgs(alg) {
+  if (!alg) { el.algSection.classList.add("hidden"); return; }
+  el.algSection.classList.remove("hidden");
+  el.algBox.innerHTML = "";
+  alg.variants.forEach((v, vi) => {
+    if (vi > 0) {
+      const hr = document.createElement("hr");
+      hr.className = "border-slate-100";
+      el.algBox.appendChild(hr);
+    }
+    const wrap = document.createElement("div");
+    const lbl = document.createElement("p");
+    lbl.className = "text-xs font-semibold text-slate-500 mb-1";
+    lbl.textContent = v.label;
+    wrap.appendChild(lbl);
+    const row = document.createElement("div");
+    row.className = "flex flex-wrap gap-1";
+    for (const m of window.CubeSolver.tokenize(v.moves)) {
+      const fc = FACE_COLOR[m[0]] || { bg: "#64748b", fg: "#fff" };
+      const chip = document.createElement("span");
+      chip.className = "alg-chip";
+      chip.style.background = fc.bg;
+      chip.style.color = fc.fg;
+      chip.textContent = m;
+      row.appendChild(chip);
+    }
+    wrap.appendChild(row);
+    el.algBox.appendChild(wrap);
+  });
+}
+
 function renderStep() {
   const s = step();
   el.counter.textContent = `Step ${currentIndex + 1} of ${steps.length}`;
   el.title.textContent = s.title;
   el.goal.textContent = s.goal;
   renderTip(TIPS[currentIndex]);
+  renderAlgs(ALGS[currentIndex]);
   goalViewer.setState(s.frames[s.frames.length - 1]);
 
   el.strip.innerHTML = "";

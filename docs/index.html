@@ -63,6 +63,17 @@
         border-radius: 0.4rem;
         padding: 1px 8px;
       }
+      /* Algorithm reference chips — one per move, colour-coded by face */
+      .alg-chip {
+        display: inline-block;
+        font-family: ui-monospace, monospace;
+        font-weight: 800;
+        font-size: 13px;
+        padding: 3px 9px;
+        border-radius: 6px;
+        letter-spacing: 0.03em;
+        line-height: 1.4;
+      }
       .cube3d-box {
         touch-action: none;
       }
@@ -161,6 +172,19 @@
         <div
           id="step-tip"
           class="text-sm font-semibold text-slate-700 bg-amber-100 border-l-4 border-amber-400 rounded-r-lg px-3 py-2"
+        ></div>
+      </section>
+
+      <!-- ALGORITHM reference box (hidden for steps without a fixed alg) -->
+      <section id="alg-section" class="mb-6 hidden">
+        <p
+          class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2 flex items-center gap-1"
+        >
+          <span aria-hidden="true">📐</span> Algorithm
+        </p>
+        <div
+          id="alg-box"
+          class="bg-white rounded-2xl shadow-md ring-1 ring-slate-200 px-4 py-3 space-y-3"
         ></div>
       </section>
 
