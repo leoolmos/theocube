@@ -241,24 +241,27 @@
       </section>
     </main>
 
+    <!-- =============== STEP LOADING OVERLAY =============== -->
+    <div
+      id="step-loading"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm"
+    >
+      <div
+        class="flex flex-col items-center gap-2 bg-white rounded-2xl px-7 py-5 shadow-xl"
+      >
+        <span class="text-3xl animate-spin" aria-hidden="true">🧩</span>
+        <p class="text-sm font-semibold text-slate-700">Loading step…</p>
+      </div>
+    </div>
+
     <!-- ===================== FIXED NAV ===================== -->
     <footer
       class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200"
     >
-      <div class="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
-        <button
-          id="btn-prev"
-          class="flex-1 py-3 rounded-xl font-bold bg-slate-200 text-slate-800 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-        >
-          ← Back
-        </button>
-        <button
-          id="btn-next"
-          class="flex-1 py-3 rounded-xl font-bold bg-amber-400 text-slate-900 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-        >
-          Next →
-        </button>
-      </div>
+      <div
+        id="step-nav"
+        class="max-w-3xl mx-auto px-2 py-3 grid grid-cols-8 gap-1"
+      ></div>
     </footer>
 
     <script src="vendor/cubejs.js"></script>

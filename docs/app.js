@@ -75,7 +75,7 @@ const TIPS = [
     steps: [
       "Look around the top for 'headlights' — a side where the 2 top corners show the SAME colour.",
       "No headlights anywhere? Apply the algorithm once from any position — they will appear.",
-      "Turn the whole cube so the headlights face the BACK, then apply the algorithm.",
+      "Turn the whole cube so the headlights face YOU (the front), then apply the algorithm.",
       "All corners in place? If not, repeat from step 1. Then turn the top (U) to finish.",
     ],
   },
@@ -124,7 +124,7 @@ const ALGS = [
   },
   {     // step 7 — corners: only the Ab perm (as in the beginner video)
     variants: [
-      { label: "Headlights at the BACK — repeat until corners are placed", moves: "R B' R F2 R' B R F2 R2" },
+      { label: "Headlights facing YOU (front) — repeat until corners are placed", moves: "R B' R F2 R' B R F2 R2" },
     ],
   },
   {     // step 8 — final edges: completed face at BACK, two cycle directions
@@ -237,8 +237,8 @@ const el = {
   framePrev: document.getElementById("frame-prev"),
   frameNext: document.getElementById("frame-next"),
   strip: document.getElementById("frame-strip"),
-  prev: document.getElementById("btn-prev"),
-  next: document.getElementById("btn-next"),
+  stepNav: document.getElementById("step-nav"),
+  stepLoading: document.getElementById("step-loading"),
   shuffle: document.getElementById("btn-shuffle"),
 };
 
@@ -352,9 +352,35 @@ function renderStep() {
   syncArrow();
   renderFrameLabel();
 
-  el.prev.disabled = currentIndex === 0;
-  el.next.disabled = currentIndex === steps.length - 1;
+  renderStepNav();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Bottom bar: one button per step. Builds the buttons once, then just
+// updates the highlighted (current) one on each render.
+function buildStepNav() {
+  el.stepNav.innerHTML = "";
+  for (let i = 0; i < steps.length; i++) {
+    const b = document.createElement("button");
+    b.dataset.i = String(i);
+    b.title = `Step ${i + 1}: ${steps[i].title}`;
+    b.textContent = String(i + 1);
+    b.className =
+      "py-2 rounded-lg font-bold text-sm active:scale-95 transition";
+    b.addEventListener("click", () => goStep(i));
+    el.stepNav.appendChild(b);
+  }
+}
+
+function renderStepNav() {
+  el.stepNav.querySelectorAll("button").forEach((b) => {
+    const active = Number(b.dataset.i) === currentIndex;
+    b.className =
+      "py-2 rounded-lg font-bold text-sm active:scale-95 transition " +
+      (active
+        ? "bg-amber-400 text-slate-900 ring-2 ring-amber-500"
+        : "bg-slate-200 text-slate-600 hover:bg-slate-300");
+  });
 }
 
 // Banner above the move player: names the piece the upcoming sequence solves.
@@ -413,21 +439,25 @@ async function stepFrame(delta) {
   renderFrameLabel();
 }
 
-function goStep(d) {
-  const n = currentIndex + d;
-  if (n < 0 || n >= steps.length) return;
-  currentIndex = n;
-  renderStep();
+// Jumps to an absolute step index. Rendering a step builds up to ~20 cube
+// thumbnails synchronously, which can freeze slower devices, so we paint a
+// loading overlay first and defer the heavy render to the next tick.
+function goStep(n) {
+  if (n < 0 || n >= steps.length || n === currentIndex || animating) return;
+  el.stepLoading.classList.remove("hidden");
+  setTimeout(() => {
+    currentIndex = n;
+    renderStep();
+    el.stepLoading.classList.add("hidden");
+  }, 30);
 }
 
-el.prev.addEventListener("click", () => goStep(-1));
-el.next.addEventListener("click", () => goStep(1));
 el.framePrev.addEventListener("click", () => stepFrame(-1));
 el.frameNext.addEventListener("click", () => stepFrame(1));
 el.shuffle.addEventListener("click", newPuzzle);
 document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowLeft") goStep(-1);
-  if (e.key === "ArrowRight") goStep(1);
+  if (e.key === "ArrowLeft") goStep(currentIndex - 1);
+  if (e.key === "ArrowRight") goStep(currentIndex + 1);
   if (e.key === "a" || e.key === "A") stepFrame(-1);
   if (e.key === "d" || e.key === "D") stepFrame(1);
 });
@@ -456,6 +486,7 @@ function newPuzzle() {
     el.app.classList.remove("hidden");
     goalViewer.resize();
     frameViewer.resize();
+    buildStepNav();
     renderStep();
   }, 30);
 }
