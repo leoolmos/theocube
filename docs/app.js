@@ -492,3 +492,11 @@ function newPuzzle() {
 }
 
 newPuzzle();
+
+// Register the service worker so the app is installable and works offline.
+// Path is relative so it works under the GitHub Pages sub-path.
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}

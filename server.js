@@ -20,6 +20,7 @@ const MIME = {
   ".json": "application/json",
   ".ico": "image/x-icon",
   ".png": "image/png",
+  ".webmanifest": "application/manifest+json; charset=utf-8",
 };
 
 const server = http.createServer((req, res) => {
