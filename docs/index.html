@@ -104,6 +104,14 @@
         </a>
         <div class="flex items-center gap-2">
           <button
+            id="btn-info"
+            title="Move notation guide"
+            aria-label="Move notation guide"
+            class="w-9 h-9 shrink-0 rounded-full bg-slate-700 hover:bg-slate-600 text-white text-base active:scale-95 transition"
+          >
+            ℹ️
+          </button>
+          <button
             id="btn-shuffle"
             title="New random scramble"
             aria-label="New random scramble"
@@ -267,6 +275,79 @@
         class="max-w-3xl mx-auto px-2 py-3 grid grid-cols-8 gap-1"
       ></div>
     </footer>
+
+    <!-- =============== MOVE NOTATION MODAL =============== -->
+    <div id="info-modal" class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4" role="dialog" aria-modal="true" aria-label="Move notation guide">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100">
+          <h2 class="text-base font-extrabold text-slate-900">Move Notation Guide</h2>
+          <button id="btn-info-close" aria-label="Close" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-500 text-lg font-bold transition">✕</button>
+        </div>
+        <div class="px-5 py-4 space-y-5 text-sm">
+          <!-- Faces -->
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Faces</p>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="flex items-center gap-2">
+                <span class="alg-chip" style="background:#9b1fc1;color:#fff;">U</span>
+                <span class="text-slate-700">Up <span class="text-slate-400">(top)</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="alg-chip" style="background:#e2e8f0;color:#1e293b;">D</span>
+                <span class="text-slate-700">Down <span class="text-slate-400">(bottom)</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="alg-chip" style="background:#1e5ac8;color:#fff;">F</span>
+                <span class="text-slate-700">Front <span class="text-slate-400">(facing you)</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="alg-chip" style="background:#1f9e57;color:#fff;">B</span>
+                <span class="text-slate-700">Back <span class="text-slate-400">(behind)</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="alg-chip" style="background:#d42a2a;color:#fff;">R</span>
+                <span class="text-slate-700">Right</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="alg-chip" style="background:#f08a24;color:#fff;">L</span>
+                <span class="text-slate-700">Left</span>
+              </div>
+            </div>
+          </div>
+          <!-- Suffixes -->
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Suffixes</p>
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="alg-chip bg-amber-100 text-amber-800 w-10 text-center">R</span>
+                <span class="text-slate-700">90° <strong>clockwise</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="alg-chip bg-amber-100 text-amber-800 w-10 text-center">R'</span>
+                <span class="text-slate-700">90° <strong>counter-clockwise</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="alg-chip bg-amber-100 text-amber-800 w-10 text-center">R2</span>
+                <span class="text-slate-700"><strong>180°</strong> (two turns, either way)</span>
+              </div>
+            </div>
+          </div>
+          <!-- Tip -->
+          <div class="bg-amber-50 border-l-4 border-amber-400 rounded-r-lg px-3 py-2 text-xs text-slate-600">
+            <strong>Tip:</strong> Clockwise is always from <em>your point of view</em> looking directly at that face.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const modal = document.getElementById("info-modal");
+        document.getElementById("btn-info").addEventListener("click", () => modal.classList.remove("hidden"));
+        document.getElementById("btn-info-close").addEventListener("click", () => modal.classList.add("hidden"));
+        modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.add("hidden"); });
+      })();
+    </script>
 
     <script src="vendor/cubejs.js"></script>
     <script src="js/solver.js"></script>
