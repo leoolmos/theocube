@@ -493,6 +493,55 @@ function newPuzzle() {
 
 newPuzzle();
 
+// ── Info modal ────────────────────────────────────────────────────────────────
+(function () {
+  const SOLVED = "UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB";
+  const modal = document.getElementById("info-modal");
+  let infoCube = null;
+  let infoFacelets = SOLVED;
+  let infoAnimating = false;
+
+  function initInfoCube() {
+    if (infoCube) return;
+    infoCube = new RubiksCube3D(
+      document.getElementById("info-cube-container"),
+      { interactive: true }
+    );
+    infoCube.setState(SOLVED);
+
+    document.querySelectorAll("[data-move]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (infoAnimating) return;
+        infoAnimating = true;
+        const token = btn.dataset.move;
+        const c = Cube.fromString(infoFacelets);
+        c.move(token);
+        const next = c.asString();
+        infoFacelets = next;
+        await infoCube.playMove(token, next);
+        infoAnimating = false;
+      });
+    });
+
+    document.getElementById("info-reset").addEventListener("click", () => {
+      if (infoAnimating) return;
+      infoFacelets = SOLVED;
+      infoCube.setState(SOLVED);
+    });
+  }
+
+  function openModal() {
+    modal.classList.remove("hidden");
+    initInfoCube();
+    setTimeout(() => infoCube && infoCube.resize(), 50);
+  }
+  function closeModal() { modal.classList.add("hidden"); }
+
+  document.getElementById("btn-info").addEventListener("click", openModal);
+  document.getElementById("btn-info-close").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+})();
+
 // Register the service worker so the app is installable and works offline.
 // Path is relative so it works under the GitHub Pages sub-path.
 if ("serviceWorker" in navigator) {
