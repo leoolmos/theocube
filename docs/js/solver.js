@@ -351,16 +351,20 @@ function solve(scramble) {
   });
 
   sv.phase("llFace", (b) => {
+    // Beginner video uses only the Sune, applied 1–3 times with U adjustments.
+    // Every OLL corner case is reachable with ≤3 Sunes + AUF rotations.
     const S = "R U R' U R U2 R'";
-    const A = "R U2 R' U' R U' R'";
     const keep = [() => sv.ollCross()];
     const algs = [
-      S, A,
-      S + " U " + S, S + " U2 " + S, S + " U' " + S, S + " " + S,
-      A + " U " + A, A + " U2 " + A, A + " U' " + A, A + " " + A,
-      S + " U " + A, S + " U2 " + A, S + " U' " + A,
-      A + " U " + S, A + " U2 " + S, A + " U' " + S,
-      S + " U2 " + S + " U2 " + S,
+      S,
+      S + " " + S, S + " U " + S, S + " U' " + S, S + " U2 " + S,
+      S + " " + S + " " + S,
+      S + " U " + S + " " + S, S + " U " + S + " U " + S,
+      S + " U " + S + " U' " + S, S + " U " + S + " U2 " + S,
+      S + " U' " + S + " " + S, S + " U' " + S + " U " + S,
+      S + " U' " + S + " U' " + S, S + " U' " + S + " U2 " + S,
+      S + " U2 " + S + " " + S, S + " U2 " + S + " U " + S,
+      S + " U2 " + S + " U' " + S, S + " U2 " + S + " U2 " + S,
     ];
     sv.attempt(() => sv.ollDone(), keep, algs, AUF, b);
   });

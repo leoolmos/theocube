@@ -52,19 +52,21 @@ const TIPS = [
     ],
   },
   {
-    lead: "Now only the top face matters. Turn the dot into an L, the L into a line, the line into a purple cross.",
+    lead: "Make a purple cross on top. Look at the top-face edges only — you will see a dot, an L, or a line.",
     steps: [
-      "Look at just the top stickers: you'll see a dot, an L, or a line.",
-      "Hold an L in the top-LEFT corner, or a line laid HORIZONTAL.",
-      "Apply F R U R' U' F' and look again — it may take up to 3 goes: dot → L → line → cross.",
+      "Dot (no purple edges on top): apply F R U R' U' F' once — you will get an L or line.",
+      "L shape (2 purple edges meeting at a corner): rotate the top until the two purple edges point to the BACK and LEFT — the corner where they meet is at back-left. Then apply F R U R' U' F'.",
+      "Line (2 purple edges opposite each other): rotate until the line runs LEFT–RIGHT. Then apply F R U R' U' F'.",
+      "Repeat until you see a full purple cross (all 4 edges purple on top).",
     ],
   },
   {
-    lead: "Make the WHOLE top purple using the Sune.",
+    lead: "Complete the top face: flip all 4 corners purple-side up using the Sune (R U R' U R U2 R').",
     steps: [
-      "Count the purple stickers already on the top corners.",
-      "Hold the cube so a solved/'fish' corner sits at the bottom-LEFT.",
-      "Apply the Sune: R U R' U R U2 R'. Repeat until every top sticker is purple.",
+      "Look only at the corners of the top face. Count how many have purple pointing STRAIGHT UP.",
+      "If one corner has purple pointing up (the 'fish'): hold that corner at the FRONT-RIGHT, then apply the Sune.",
+      "If no corner has purple pointing up: apply the Sune once from any position, then re-check.",
+      "After each Sune, adjust the top (U) if needed and repeat until all 4 corners are purple on top.",
     ],
   },
   {
@@ -78,9 +80,10 @@ const TIPS = [
   {
     lead: "Last move: cycle the 4 side edges to finish the cube.",
     steps: [
-      "Only the middle edges of the last layer are left to swap.",
-      "Apply the final algorithm.",
-      "Not solved yet? Turn the top and run it again until every side is one solid colour.",
+      "Only the top-layer edges are left to swap — the middle layer is already done.",
+      "Look at the 4 side centres on the top layer. Find the face whose edge already matches its centre (if any) — hold that face toward you.",
+      "Apply the algorithm. Then turn the top and check if the cube is solved.",
+      "Not solved? Apply the algorithm again from the same position.",
     ],
   },
 ];
