@@ -40,15 +40,15 @@ const TIPS = [
     ],
   },
   {
-    lead: "Middle layer: place the side edges that have NO purple on them. 'Throw it back' to the far side, then let it fall in.",
+    lead: "Place the 4 middle-layer edges. Look on the TOP for any edge that has NO purple and NO white — those are middle edges temporarily sitting up there.",
     steps: [
       "Keep white on the bottom, purple on top.",
-      "Find a top edge with NO purple on it — that edge lives in the middle, not on top.",
-      "Spin the top until the edge's FRONT colour matches its centre (it makes an upside-down T).",
-      "Its other colour points LEFT or RIGHT — that's the side it must go.",
+      "Look at the 4 edges on the top layer. Find one with NO purple and NO white — that's a middle-layer edge waiting to be placed.",
+      "Spin the top (U) until that edge's FRONT colour matches the centre directly below it (it forms an upside-down T).",
+      "Look at the sticker on top of that edge — it points to the side the edge must go.",
       "Goes RIGHT: U R U' R' U' F' U F.   Goes LEFT: U' L' U L U F U' F'.",
-      "Why it works: you first turn the top AWAY from the target ('throw it back'), tuck a corner out, drop the edge in, then put the corner back — the bottom never breaks.",
-      "No purple-free edge on top? One is stuck wrong in the middle — run either algorithm once to kick it out, then align it.",
+      "Why it works: U throws the edge away from the slot, then the algorithm tucks it in without breaking the white layer.",
+      "No middle edge on top? One is trapped wrong in the middle layer — run either algorithm once to kick it out, then re-align it.",
     ],
   },
   {
