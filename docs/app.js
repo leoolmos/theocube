@@ -10,16 +10,79 @@
  */
 import { RubiksCube3D } from "./js/cube3d.js";
 
-// Short technique reminders (from the Manual do Mundo videos).
+// Step-by-step technique hints, in the spirit of the Manual do Mundo beginner
+// videos. Each entry has a short `lead` and a few plain-language `steps` so a
+// beginner understands WHAT is happening, not just which buttons to press.
 const TIPS = [
-  "Intuitive: bring the 4 white edges up around the purple centre.",
-  "Line each white edge up with its centre, then turn that face twice (F2) to drop it.",
-  "Put a white corner above its slot, then R U R' U' until it drops in.",
-  "Pair the middle edge and insert it left or right (U R U' R' U' F' U F).",
-  "Dot, L or line? Apply F R U R' U' F' until the purple cross appears.",
-  "Point the 'fish' to the bottom-left and apply the Sune: R U R' U R U2 R'.",
-  "Find the 'headlights' (two matching corners) and cycle the corners.",
-  "Cycle the last 3 edges to finish the cube.",
+  {
+    lead: "Build a daisy on top: the purple centre in the middle, 4 white edges as petals.",
+    steps: [
+      "Turn the cube so the purple centre is on top.",
+      "One at a time, bring a white edge up next to the purple centre.",
+      "Ignore the edge's other colour for now — just get 4 white petals up top.",
+    ],
+  },
+  {
+    lead: "Drop each petal straight down to build a white cross underneath.",
+    steps: [
+      "Pick one white petal. Spin the TOP until the edge's side colour matches the centre right below it (red over red, etc.).",
+      "Now turn that whole face TWICE (F2) — the white edge drops straight down.",
+      "Repeat for all 4. Underneath you now have a white cross, each arm matching its side.",
+    ],
+  },
+  {
+    lead: "Finish the white face by dropping in the 4 white corners.",
+    steps: [
+      "Flip the cube so white is on the BOTTOM.",
+      "Find a white corner in the TOP layer and move it right above the empty slot it belongs in (its 2 side colours must match the 2 nearby centres).",
+      "Repeat R U R' U' until the corner drops in with white on the bottom.",
+      "Corner stuck in the bottom the wrong way? Pop it out first with R U R', then redo.",
+    ],
+  },
+  {
+    lead: "Middle layer: place the side edges that have NO purple on them. 'Throw it back' to the far side, then let it fall in.",
+    steps: [
+      "Keep white on the bottom, purple on top.",
+      "Find a top edge with NO purple on it — that edge lives in the middle, not on top.",
+      "Spin the top until the edge's FRONT colour matches its centre (it makes an upside-down T).",
+      "Its other colour points LEFT or RIGHT — that's the side it must go.",
+      "Goes RIGHT: U R U' R' U' F' U F.   Goes LEFT: U' L' U L U F U' F'.",
+      "Why it works: you first turn the top AWAY from the target ('throw it back'), tuck a corner out, drop the edge in, then put the corner back — the bottom never breaks.",
+      "No purple-free edge on top? One is stuck wrong in the middle — run either algorithm once to kick it out, then align it.",
+    ],
+  },
+  {
+    lead: "Now only the top face matters. Turn the dot into an L, the L into a line, the line into a purple cross.",
+    steps: [
+      "Look at just the top stickers: you'll see a dot, an L, or a line.",
+      "Hold an L in the top-LEFT corner, or a line laid HORIZONTAL.",
+      "Apply F R U R' U' F' and look again — it may take up to 3 goes: dot → L → line → cross.",
+    ],
+  },
+  {
+    lead: "Make the WHOLE top purple using the Sune.",
+    steps: [
+      "Count the purple stickers already on the top corners.",
+      "Hold the cube so a solved/'fish' corner sits at the bottom-LEFT.",
+      "Apply the Sune: R U R' U R U2 R'. Repeat until every top sticker is purple.",
+    ],
+  },
+  {
+    lead: "Put the corners in their correct spots (colours on the sides can still be off).",
+    steps: [
+      "Look at the side corners and find two that already match — the 'headlights'.",
+      "Hold the headlights at the BACK.",
+      "Apply the corner-cycle algorithm to rotate the other corners into place.",
+    ],
+  },
+  {
+    lead: "Last move: cycle the 4 side edges to finish the cube.",
+    steps: [
+      "Only the middle edges of the last layer are left to swap.",
+      "Apply the final algorithm.",
+      "Not solved yet? Turn the top and run it again until every side is one solid colour.",
+    ],
+  },
 ];
 
 const STEP_META = [
@@ -41,6 +104,19 @@ function instruction(move) {
   return `Turn the ${FACE_NAME[f].toUpperCase()} face ${DIR[suf]}`;
 }
 
+// Facelet letter → colour word, matching the 3D renderer's sticker palette.
+const COLOR = { U: "purple", D: "white", F: "blue", R: "red", L: "orange", B: "green" };
+// Turns a segment label into a short "which piece" phrase for the banner.
+function pieceName(label) {
+  if (!label) return "";
+  if (label.note) return label.note;
+  if (label.cols) {
+    const parts = label.cols.split("").map((c) => COLOR[c]);
+    return `${parts.join("-")} ${parts.length === 3 ? "corner" : "edge"}`;
+  }
+  return "";
+}
+
 const FACES = ["U", "D", "L", "R", "F", "B"];
 function randomScramble(n = 22) {
   const out = []; let prev = "";
@@ -54,19 +130,40 @@ function randomScramble(n = 22) {
 
 // Replays a solved scramble into 8 steps, each with a facelet-string "frame"
 // per move (frame 0 = state before the step's first move, last frame = goal).
+// Every step's moves are grouped into segments (one piece at a time) so the UI
+// can announce which piece the next sequence solves. Each segment is simplified
+// on its own, so a piece's algorithm is never merged into its neighbour's.
 function buildSteps(scramble, sv) {
   const cube = new window.Cube();
   cube.move(scramble);
   return sv.phases.map((phase, idx) => {
-    const moves = window.CubeSolver.simplify(phase.moves);
+    // Fall back to one whole-phase segment when the phase isn't segmented, or
+    // when its segments don't cleanly cover every move (safety for the replay).
+    let raw = phase.segments || [];
+    const covered = raw.length && raw[0].from === 0 &&
+      raw.every((s, i) => i === 0 || s.from === raw[i - 1].to) &&
+      raw[raw.length - 1].to === phase.moves.length;
+    if (!covered) raw = [{ label: null, from: 0, to: phase.moves.length }];
+
     const frames = [cube.asString()];
     const stepMoves = [];
-    for (const mv of moves) {
-      cube.move(mv);
-      frames.push(cube.asString());
-      stepMoves.push({ move: mv, instruction: instruction(mv) });
+    const segments = [];
+    for (const sg of raw) {
+      const moves = window.CubeSolver.simplify(phase.moves.slice(sg.from, sg.to));
+      if (!moves.length) continue;
+      const prev = segments[segments.length - 1];
+      const sameAsPrev = prev && JSON.stringify(prev.label) === JSON.stringify(sg.label);
+      const start = stepMoves.length;
+      for (const mv of moves) {
+        cube.move(mv);
+        frames.push(cube.asString());
+        stepMoves.push({ move: mv, instruction: instruction(mv) });
+      }
+      // Merge consecutive segments that target the same piece.
+      if (sameAsPrev) prev.count += moves.length;
+      else segments.push({ label: sg.label, start, count: moves.length });
     }
-    return { id: idx + 1, title: STEP_META[idx].title, goal: STEP_META[idx].goal, moves: stepMoves, frames };
+    return { id: idx + 1, title: STEP_META[idx].title, goal: STEP_META[idx].goal, moves: stepMoves, frames, segments };
   });
 }
 
@@ -83,6 +180,7 @@ const el = {
   title: document.getElementById("step-title"),
   goal: document.getElementById("step-goal"),
   tip: document.getElementById("step-tip"),
+  segLabel: document.getElementById("seg-label"),
   frameLabel: document.getElementById("frame-label"),
   framePrev: document.getElementById("frame-prev"),
   frameNext: document.getElementById("frame-next"),
@@ -117,12 +215,35 @@ function syncArrow() {
   else frameViewer.clearMoveArrow();
 }
 
+// Renders a structured hint: a bold lead line plus a numbered list of small,
+// plain-language steps. Uses textContent per node so cube notation (R U R')
+// can never be interpreted as HTML.
+function renderTip(tip) {
+  el.tip.innerHTML = "";
+  if (!tip) return;
+  if (typeof tip === "string") { el.tip.textContent = tip; return; }
+  const lead = document.createElement("p");
+  lead.className = "font-bold mb-1";
+  lead.textContent = tip.lead;
+  el.tip.appendChild(lead);
+  if (tip.steps && tip.steps.length) {
+    const ol = document.createElement("ol");
+    ol.className = "list-decimal pl-5 space-y-1 font-medium text-slate-700";
+    for (const s of tip.steps) {
+      const li = document.createElement("li");
+      li.textContent = s;
+      ol.appendChild(li);
+    }
+    el.tip.appendChild(ol);
+  }
+}
+
 function renderStep() {
   const s = step();
   el.counter.textContent = `Step ${currentIndex + 1} of ${steps.length}`;
   el.title.textContent = s.title;
   el.goal.textContent = s.goal;
-  el.tip.textContent = TIPS[currentIndex] || "";
+  renderTip(TIPS[currentIndex]);
   goalViewer.setState(s.frames[s.frames.length - 1]);
 
   el.strip.innerHTML = "";
@@ -151,7 +272,23 @@ function renderStep() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+// Banner above the move player: names the piece the upcoming sequence solves.
+function renderSegLabel() {
+  const s = step();
+  const seg = (s.segments || []).find((g) => frameIndex >= g.start && frameIndex < g.start + g.count);
+  const label = seg && seg.label;
+  if (frameIndex >= s.moves.length || !label) {
+    el.segLabel.classList.add("hidden");
+    el.segLabel.textContent = "";
+  } else {
+    el.segLabel.classList.remove("hidden");
+    // A named piece ("Now solving: blue-red edge") vs. a plain action note.
+    el.segLabel.innerHTML = label.note ? `🧩 ${label.note}` : `🧩 Now solving: <b>${pieceName(label)}</b>`;
+  }
+}
+
 function renderFrameLabel() {
+  renderSegLabel();
   const s = step();
   const total = s.moves.length;
   if (frameIndex >= total) {

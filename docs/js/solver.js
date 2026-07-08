@@ -175,10 +175,19 @@ class Solver {
     return false;
   }
 
+  // A phase is one pedagogical step. Inside it, `seg(label, fn)` groups the
+  // moves that fix ONE piece, so the UI can announce which piece is next.
+  // label = { cols:"FR" } (an edge/corner named by its colours) or { note:"…" }.
   phase(name, fn) {
     const bucket = [];
-    fn(bucket);
-    this.phases.push({ name, moves: bucket.slice() });
+    const segments = [];
+    const seg = (label, sfn) => {
+      const from = bucket.length;
+      sfn();
+      if (bucket.length > from) segments.push({ label, from, to: bucket.length });
+    };
+    fn(bucket, seg);
+    this.phases.push({ name, moves: bucket.slice(), segments });
   }
 }
 
@@ -219,29 +228,35 @@ const EDGE_INSERTS_ALL = [
 function solve(scramble) {
   const sv = new Solver(scramble);
 
-  sv.phase("daisy", (b) => {
+  sv.phase("daisy", (b, seg) => {
     let guard = 0;
     while (sv.petalCount() < 4 && guard++ < 8) {
       const before = sv.petalCount();
-      const seq = sv.search(() => sv.petalCount() > before, 4);
-      if (seq && seq.length) sv.do(seq.join(" "), b);
-      else break;
+      let advanced = false;
+      seg({ note: "Bring a white edge up to the daisy" }, () => {
+        const seq = sv.search(() => sv.petalCount() > before, 4);
+        if (seq && seq.length) { sv.do(seq.join(" "), b); advanced = true; }
+      });
+      if (!advanced) break;
     }
   });
 
-  sv.phase("cross", (b) => {
+  sv.phase("cross", (b, seg) => {
     for (const side of ["F", "R", "B", "L"]) {
       if (sv.crossEdgeSolved(side)) continue;
-      const keeps = ["F", "R", "B", "L"]
-        .filter((s2) => sv.crossEdgeSolved(s2))
-        .map((s2) => () => sv.crossEdgeSolved(s2));
-      const goal = () => sv.crossEdgeSolved(side);
-      sv.attempt(goal, keeps, [side + "2"], AUF, b) ||
-        sv.attempt(goal, keeps, LIFT_ALGS.concat([side + "2"]), ALL_SETUPS, b);
+      // The cross edge for this side is white (D) + the side's own colour.
+      seg({ cols: "D" + side }, () => {
+        const keeps = ["F", "R", "B", "L"]
+          .filter((s2) => sv.crossEdgeSolved(s2))
+          .map((s2) => () => sv.crossEdgeSolved(s2));
+        const goal = () => sv.crossEdgeSolved(side);
+        sv.attempt(goal, keeps, [side + "2"], AUF, b) ||
+          sv.attempt(goal, keeps, LIFT_ALGS.concat([side + "2"]), ALL_SETUPS, b);
+      });
     }
   });
 
-  sv.phase("firstLayer", (b) => {
+  sv.phase("firstLayer", (b, seg) => {
     const CSLOTS = ["DFR", "DRB", "DBL", "DLF"];
     const hasWhite = (slot) => { const [a, bb, c] = CORNERS[slot]; const s = sv.s(); return s[a] === "D" || s[bb] === "D" || s[c] === "D"; };
     let guard = 0;
@@ -254,42 +269,71 @@ function solve(scramble) {
         const keeps = CSLOTS.filter((cc) => cc !== home && sv.flCornerSolved(cc)).map((cc) => () => sv.flCornerSolved(cc))
           .concat(["F", "R", "B", "L"].map((s2) => () => sv.crossEdgeSolved(s2)));
         const goal = () => sv.flCornerSolved(home);
-        const ok = sv.attempt(goal, keeps, CORNER_INSERTS, AUF, b);
-        if (!ok) sv.do("U", b);
+        seg(home ? { cols: CORNER_COLORS[home] } : { note: "Place a white corner" }, () => {
+          const ok = sv.attempt(goal, keeps, CORNER_INSERTS, AUF, b);
+          if (!ok) sv.do("U", b);
+        });
       } else {
         const bad = CSLOTS.find((sl) => hasWhite(sl) && !sv.flCornerSolved(sl));
         if (!bad) break;
-        sv.do(CORNER_POP[bad], b);
+        seg({ note: "Free a stuck white corner" }, () => sv.do(CORNER_POP[bad], b));
       }
     }
   });
 
-  sv.phase("secondLayer", (b) => {
+  sv.phase("secondLayer", (b, seg) => {
+    // Pedagogical middle layer, exactly like the beginner video: take a top
+    // edge that has no top/bottom colour, turn U until its front sticker meets
+    // its centre, then insert it to the right or left with the video's algs.
+    // Front face F below means "whichever face the edge is aligned with".
+    const RIGHT = {
+      F: "U R U' R' U' F' U F", R: "U B U' B' U' R' U R",
+      B: "U L U' L' U' B' U B", L: "U F U' F' U' L' U L",
+    };
+    const LEFT = {
+      F: "U' L' U L U F U' F'", R: "U' F' U F U R U' R'",
+      B: "U' R' U R U B U' B'", L: "U' B' U B U L U' L'",
+    };
+    const RIGHT_OF = { F: "R", R: "B", B: "L", L: "F" };
+    const US = ["UF", "UR", "UB", "UL"];
+    const FACE_OF = { UF: "F", UR: "R", UB: "B", UL: "L" };
+    // A top edge belongs in the middle when neither sticker is top (U) or bottom (D).
+    const insertable = (sl) => {
+      const [a, bb] = EDGES[sl]; const s = sv.s();
+      return s[a] !== "U" && s[a] !== "D" && s[bb] !== "U" && s[bb] !== "D";
+    };
+
     let guard = 0;
     while (!sv.secondLayerSolved() && guard++ < 30) {
-      const uSlot = ["UF", "UR", "UB", "UL"].find((sl) => {
-        const [a, bb] = EDGES[sl]; const s = sv.s();
-        return s[a] !== "U" && s[a] !== "D" && s[bb] !== "U" && s[bb] !== "D";
-      });
-      if (uSlot) {
-        const [a, bb] = EDGES[uSlot]; const s = sv.s();
-        const cols = [s[a], s[bb]].sort().join("");
-        const home = ["FR", "FL", "BR", "BL"].find((e) => EDGE_COLORS[e].split("").sort().join("") === cols);
-        const keeps = ["FR", "FL", "BR", "BL"]
-          .filter((e) => e !== home && sv.slEdgeSolved(e)).map((e) => () => sv.slEdgeSolved(e))
-          .concat([() => sv.firstLayerSolved()]);
-        const goal = () => sv.slEdgeSolved(home);
-        const ok = sv.attempt(goal, keeps, EDGE_INSERTS_ALL, AUF, b) ||
-          sv.attempt(goal, keeps, ["U R U' R' U' F' U F"], AUF, b, ["", "y", "y2", "y'"]);
-        if (!ok) sv.do("U", b);
+      const start = US.find(insertable);
+      if (start) {
+        // Track this edge by its colour pair while we turn U to align it.
+        const s0 = sv.s();
+        const pair = [s0[EDGES[start][0]], s0[EDGES[start][1]]].sort().join("");
+        seg({ cols: pair }, () => {
+          const frontColor = s0[EDGES[start][1]]; // side sticker → the centre it must meet
+          let slot = start, turns = 0;
+          while (FACE_OF[slot] !== frontColor && turns++ < 4) {
+            sv.do("U", b);
+            slot = US.find((sl) => {
+              const s = sv.s();
+              return [s[EDGES[sl][0]], s[EDGES[sl][1]]].sort().join("") === pair;
+            });
+          }
+          const front = FACE_OF[slot];
+          const topColor = sv.s()[EDGES[slot][0]]; // U-face sticker decides the side
+          sv.do(topColor === RIGHT_OF[front] ? RIGHT[front] : LEFT[front], b);
+        });
       } else {
+        // No insertable edge on top → one is stuck wrong in the middle. Run the
+        // front-right insert on its slot to kick it up, then the loop re-aligns it.
         const EJECT = {
           FR: "U R U' R' U' F' U F", FL: "U' L' U L U F U' F'",
           BR: "U B U' B' U' R' U R", BL: "U' B' U B U L U' L'",
         };
         const bad = ["FR", "FL", "BR", "BL"].find((e) => !sv.slEdgeSolved(e));
         if (!bad) break;
-        sv.do(EJECT[bad], b);
+        seg({ note: "Clear a wrongly-placed edge" }, () => sv.do(EJECT[bad], b));
       }
     }
   });
