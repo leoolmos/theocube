@@ -71,14 +71,12 @@ const TIPS = [
     ],
   },
   {
-    lead: "Cycle the top corners into their correct slots. Purple is already up — now fix the SIDE colours.",
+    lead: "Move the top corners into their correct places. Just one algorithm, repeated until they line up.",
     steps: [
-      "Look at the SIDE stickers of each top corner. Each corner belongs in the slot where its 2 side colours match the 2 nearby centres.",
-      "Find 'headlights': look at each side face — two adjacent top corners on the same face show the SAME colour. Those are the headlights.",
-      "No headlights visible? Apply the algorithm once from any position — headlights will appear. Then find them and continue.",
-      "Hold the headlights facing the BACK, then apply the algorithm.",
-      "Check the corners. If still not correct, apply the algorithm once more from the same position.",
-      "When all corner side colours match their centres, turn U to align the top layer perfectly.",
+      "Look around the top for 'headlights' — a side where the 2 top corners show the SAME colour.",
+      "No headlights anywhere? Apply the algorithm once from any position — they will appear.",
+      "Turn the whole cube so the headlights face the BACK, then apply the algorithm.",
+      "All corners in place? If not, repeat from step 1. Then turn the top (U) to finish.",
     ],
   },
   {
@@ -126,7 +124,7 @@ const ALGS = [
   },
   {     // step 7 — corners: only the Ab perm (as in the beginner video)
     variants: [
-      { label: "Algorithm — headlights at BACK (apply once or twice until solved)", moves: "R B' R F2 R' B R F2 R2" },
+      { label: "Headlights at the BACK — repeat until corners are placed", moves: "R B' R F2 R' B R F2 R2" },
     ],
   },
   {     // step 8 — final edges: completed face at BACK, two cycle directions
