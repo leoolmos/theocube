@@ -80,14 +80,14 @@ const TIPS = [
     ],
   },
   {
-    lead: "Cycle the last 3 top edges to finish the cube, using the Minerva algorithm: F2 U M' U2 M U F2.",
+    lead: "Cycle the last 3 top edges to finish the cube, using the Minerva algorithm: F2 U L R' F2 L' R U F2.",
     steps: [
       "Look for a side that is already COMPLETE (its top edge already matches the centre below it). Turn the cube so that solved side faces the BACK.",
       "No side is complete? Apply the algorithm once from any position — a complete side will appear. Then put it at the BACK.",
       "With the solved side at the back, the other 3 edges (front, left, right) cycle. Look at them to see which way they need to go.",
-      "The M move is the middle slice: hold the left and right faces steady and turn just the centre column with one finger.",
-      "Turning clockwise → (front edge goes to the right): F2 U M' U2 M U F2.",
-      "Turning counter-clockwise ← (front edge goes to the left): F2 U' M' U2 M U' F2.",
+      "The trick: turn the two SIDE faces together — Left and Right in opposite directions (L R') — just like the video.",
+      "Turning clockwise → (front edge goes to the right): F2 U L R' F2 L' R U F2.",
+      "Turning counter-clockwise ← (front edge goes to the left): F2 U' L R' F2 L' R U' F2.",
       "Not solved yet? Find the complete side again, put it at the back, and repeat. The cube is now solved!",
     ],
   },
@@ -103,10 +103,6 @@ const FACE_COLOR = {
   D: { bg: "#e2e8f0", fg: "#1e293b" },
   L: { bg: "#f08a24", fg: "#ffffff" },
   B: { bg: "#1f9e57", fg: "#ffffff" },
-  // Slice moves (middle columns/rows) — neutral slate, not a face colour.
-  M: { bg: "#334155", fg: "#ffffff" },
-  E: { bg: "#334155", fg: "#ffffff" },
-  S: { bg: "#334155", fg: "#ffffff" },
 };
 const ALGS = [
   null, // step 1 — daisy (intuitive)
@@ -135,8 +131,8 @@ const ALGS = [
   },
   {     // step 8 — final edges: Minerva, solved face at BACK, two cycle directions
     variants: [
-      { label: "Cycle clockwise →  (solved face at BACK)", moves: "F2 U M' U2 M U F2"  },
-      { label: "Cycle counter-clockwise ←  (solved face at BACK)", moves: "F2 U' M' U2 M U' F2" },
+      { label: "Cycle clockwise →  (solved face at BACK)", moves: "F2 U L R' F2 L' R U F2"  },
+      { label: "Cycle counter-clockwise ←  (solved face at BACK)", moves: "F2 U' L R' F2 L' R U' F2" },
     ],
   },
 ];
@@ -153,12 +149,10 @@ const STEP_META = [
 ];
 
 const FACE_NAME = { U: "top", D: "bottom", F: "front", R: "right", L: "left", B: "back" };
-const SLICE_NAME = { M: "middle (M) slice", E: "equator (E) slice", S: "standing (S) slice" };
 const DIR = { "": "clockwise", "'": "counter-clockwise", "2": "180°" };
 function instruction(move) {
   const f = move[0], suf = move.slice(1);
   if ("xyz".includes(f)) return `Rotate the WHOLE cube (${move})`;
-  if (f in SLICE_NAME) return `Turn the ${SLICE_NAME[f]} ${DIR[suf]}`;
   return `Turn the ${FACE_NAME[f].toUpperCase()} face ${DIR[suf]}`;
 }
 

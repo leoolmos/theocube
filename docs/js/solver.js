@@ -388,9 +388,10 @@ function solve(scramble) {
 
   sv.phase("llEdges", (b) => {
     const solvedAUF = () => AUF.some((su) => { sv.do(su); const ok = sv.solved(); sv.undo(su); return ok; });
-    // Manual do Mundo "Minerva": the M slice is the middle column (like L).
-    const Mn = "F2 U M' U2 M U F2";    // clockwise cycle
-    const Mi = "F2 U' M' U2 M U' F2";  // counter-clockwise cycle
+    // Manual do Mundo "Minerva": two side turns (L R') do the job instead of a
+    // middle slice, exactly as the video shows.
+    const Mn = "F2 U L R' F2 L' R U F2";    // clockwise cycle
+    const Mi = "F2 U' L R' F2 L' R U' F2";  // counter-clockwise cycle
     const algs = [Mn, Mi, Mn + " U " + Mn, Mn + " " + Mn, Mn + " U2 " + Mn, Mn + " U' " + Mn, Mi + " U " + Mi];
     sv.attempt(solvedAUF, [], algs, AUF, b);
     for (const su of AUF) { sv.do(su, b); if (sv.solved()) return; sv.undo(su, b); }

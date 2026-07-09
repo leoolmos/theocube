@@ -38,16 +38,12 @@ function stickerIndex(face, x, y, z) {
 const AXIS = {
   U: [0, 1, 0], D: [0, -1, 0], F: [0, 0, 1], B: [0, 0, -1], R: [1, 0, 0], L: [-1, 0, 0],
   x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1],
-  // Slice moves turn the same visual direction as the face they follow:
-  // M like L, E like D, S like F.
-  M: [-1, 0, 0], E: [0, -1, 0], S: [0, 0, 1],
 };
 const LAYER = {
   U: (u) => u.y === 1, D: (u) => u.y === -1,
   F: (u) => u.z === 1, B: (u) => u.z === -1,
   R: (u) => u.x === 1, L: (u) => u.x === -1,
   x: () => true, y: () => true, z: () => true,
-  M: (u) => u.x === 0, E: (u) => u.y === 0, S: (u) => u.z === 0,
 };
 
 const GAP = 1.03; // spacing between cubie centers
@@ -281,7 +277,7 @@ export class RubiksCube3D {
     this.clearMoveArrow();
     if (!token) return;
     const face = token[0], suffix = token.slice(1);
-    if ("xyzMES".includes(face)) return; // whole-cube / slice: no single face to mark
+    if ("xyz".includes(face)) return; // whole-cube rotation: no single face to mark
     this._arrow = buildArrowGroup(face, suffix !== "'");
     this.scene.add(this._arrow);
     this.requestRender();
