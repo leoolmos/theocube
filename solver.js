@@ -373,9 +373,11 @@ function solve(scramble) {
       CORNER_COLORS[c].split("").sort().join(""));
     const cornersOkAUF = () => AUF.some((su) => { sv.do(su); const ok = cornersExact(); sv.undo(su); return ok; });
     const keep = [() => sv.ollDone()];
-    const Aa = "R' F R' B2 R F' R' B2 R2";
-    const Ab = "R B' R F2 R' B R F2 R2";
-    const algs = [Aa, Ab, Aa + " U " + Aa, Aa + " U' " + Aa, Aa + " U2 " + Aa, Aa + " " + Aa];
+    // Manual do Mundo corner permutation: tilt the cube so the headlights face
+    // DOWN (x'), run R U' R D2 R' U R D2 R2, tilt back (x). In the U-last-layer
+    // frame this is a pure 3-cycle of the top corners (URF→UFL→UBR).
+    const A = "x' R U' R D2 R' U R D2 R2 x";
+    const algs = [A, A + " U " + A, A + " U' " + A, A + " U2 " + A, A + " " + A];
     sv.attempt(cornersOkAUF, keep, algs, AUF, b);
     // align corners to home
     for (const su of AUF) { sv.do(su, b); if (cornersExact()) return; sv.undo(su, b); }

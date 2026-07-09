@@ -75,7 +75,7 @@ const TIPS = [
     steps: [
       "Look around the top for 'headlights' — a side where the 2 top corners show the SAME colour.",
       "No headlights anywhere? Apply the algorithm once from any position — they will appear.",
-      "Turn the whole cube so the headlights face YOU (the front), then apply the algorithm.",
+      "Tilt the whole cube forward so the headlights face DOWN, then apply the algorithm: R U' R D2 R' U R D2 R2.",
       "All corners in place? If not, repeat from step 1. Then turn the top (U) to finish.",
     ],
   },
@@ -122,9 +122,9 @@ const ALGS = [
       { label: "Sune — fish at FRONT-RIGHT (repeat until full face)", moves: "R U R' U R U2 R'" },
     ],
   },
-  {     // step 7 — corners: only the Ab perm (as in the beginner video)
+  {     // step 7 — corners: Manual do Mundo alg, headlights facing DOWN
     variants: [
-      { label: "Headlights facing YOU (front) — repeat until corners are placed", moves: "R B' R F2 R' B R F2 R2" },
+      { label: "Headlights facing DOWN — repeat until corners are placed", moves: "R U' R D2 R' U R D2 R2" },
     ],
   },
   {     // step 8 — final edges: completed face at BACK, two cycle directions
