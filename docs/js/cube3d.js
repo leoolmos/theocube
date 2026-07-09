@@ -8,7 +8,10 @@
  * temporary turning animation on top, purely visual — it always ends by
  * snapping back to the fixed grid and recoloring from the true state.
  */
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+// Vendored locally (not a CDN import): iOS content blockers / Lockdown Mode /
+// flaky mobile networks can silently block a cross-origin ES-module import,
+// freezing the whole app on the loading screen. Local = works offline too.
+import * as THREE from "../vendor/three.module.js";
 
 const FACE_OFFSET = { U: 0, R: 9, F: 18, D: 27, L: 36, B: 45 };
 const STICKER_HEX = {

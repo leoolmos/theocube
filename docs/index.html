@@ -366,6 +366,38 @@
       </div>
     </div>
 
+    <!-- Boot watchdog (classic script, runs even if the ES module or the
+         Three.js CDN import fails to load — the common iOS failure mode). If
+         the app never leaves the loading screen, show the real reason instead
+         of hanging forever on "Shuffling…". -->
+    <script>
+      window.addEventListener("error", function (e) {
+        window.__bootError = (e.error && (e.error.stack || e.error.message)) || e.message;
+      });
+      window.addEventListener("unhandledrejection", function (e) {
+        var r = e.reason;
+        window.__bootError = (r && (r.stack || r.message)) || String(r);
+      });
+      window.addEventListener("load", function () {
+        setTimeout(function () {
+          var app = document.getElementById("app");
+          var loading = document.getElementById("loading");
+          var started = app && !app.classList.contains("hidden");
+          if (started || !loading || loading.classList.contains("hidden")) return;
+          var p = loading.querySelector("p");
+          if (!p) return;
+          if (window.__bootError) {
+            p.textContent = "Could not start: " + window.__bootError;
+          } else {
+            p.textContent =
+              "Could not load the 3D engine. Check your connection, turn off " +
+              "content blockers / Lockdown Mode, then reload.";
+          }
+          p.classList.add("text-red-600");
+        }, 8000);
+      });
+    </script>
+
     <script src="vendor/cubejs.js"></script>
     <script src="js/solver.js"></script>
     <script type="module" src="app.js"></script>

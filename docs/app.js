@@ -244,9 +244,22 @@ const el = {
   shuffle: document.getElementById("btn-shuffle"),
 };
 
-const goalViewer = new RubiksCube3D(document.getElementById("goal3d"), { interactive: true });
-const frameViewer = new RubiksCube3D(document.getElementById("frame3d"), { interactive: true });
-const thumbViewer = new RubiksCube3D(document.getElementById("thumb-factory"), { interactive: false });
+// Building a WebGLRenderer can throw on iOS Safari when the browser refuses a
+// new WebGL context (context cap reached / low memory / WebGL disabled). Surface
+// that on the loading screen instead of dying silently and hanging on "Shuffling…".
+let goalViewer, frameViewer, thumbViewer;
+try {
+  goalViewer = new RubiksCube3D(document.getElementById("goal3d"), { interactive: true });
+  frameViewer = new RubiksCube3D(document.getElementById("frame3d"), { interactive: true });
+  thumbViewer = new RubiksCube3D(document.getElementById("thumb-factory"), { interactive: false });
+} catch (err) {
+  const p = el.loading && el.loading.querySelector("p");
+  if (p) {
+    p.textContent = "3D not available on this device: " + (err && err.message || err);
+    p.classList.add("text-red-600");
+  }
+  throw err;
+}
 
 function step() { return steps[currentIndex]; }
 
