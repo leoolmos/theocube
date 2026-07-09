@@ -47,7 +47,7 @@ const TIPS = [
       "Spin the top (U) until that edge's FRONT colour matches the centre directly below it (it forms an upside-down T).",
       "Look at the sticker on top of that edge — it points to the side the edge must go.",
       "Goes RIGHT: U R U' R' U2 F' U2 F.   Goes LEFT: U' L' U L U2 F U2 F'.",
-      "Why it works: U throws the edge away from the slot, then the algorithm tucks it in without breaking the white layer.",
+      "Why it works: the first U throws the edge away from the slot, then the R (or L) moves swing the slot open; the U2 half-turns line the edge back up and the F (or F') moves tuck it in — all without breaking the white layer.",
       "No middle edge on top? One is trapped wrong in the middle layer — run either algorithm once to kick it out, then re-align it.",
     ],
   },
