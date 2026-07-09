@@ -144,12 +144,19 @@ function disposeGroup(group) {
 }
 
 export class RubiksCube3D {
-  constructor(container, { interactive = true, cameraDistance = 10.5 } = {}) {
+  constructor(
+    container,
+    { interactive = true, cameraDistance = 10.5, antialias = false, maxPixelRatio = 1.75 } = {}
+  ) {
     this.container = container;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    // antialias defaults OFF and pixel ratio is capped low: iOS Safari gives each
+    // WebGL content process a hard memory ceiling, and MSAA at a 2-3x device pixel
+    // ratio across several live cubes blows past it → the tab dies ("Can't open
+    // this page"). The 2x-ish pixel ratio keeps edges acceptable without MSAA.
+    this.renderer = new THREE.WebGLRenderer({ antialias, alpha: true, powerPreference: "low-power" });
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxPixelRatio));
     container.appendChild(this.renderer.domElement);
     this.renderer.domElement.style.width = "100%";
     this.renderer.domElement.style.height = "100%";

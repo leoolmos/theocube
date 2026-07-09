@@ -251,7 +251,7 @@ let goalViewer, frameViewer, thumbViewer;
 try {
   goalViewer = new RubiksCube3D(document.getElementById("goal3d"), { interactive: true });
   frameViewer = new RubiksCube3D(document.getElementById("frame3d"), { interactive: true });
-  thumbViewer = new RubiksCube3D(document.getElementById("thumb-factory"), { interactive: false });
+  thumbViewer = new RubiksCube3D(document.getElementById("thumb-factory"), { interactive: false, maxPixelRatio: 1 });
 } catch (err) {
   const p = el.loading && el.loading.querySelector("p");
   if (p) {

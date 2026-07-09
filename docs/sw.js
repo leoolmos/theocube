@@ -3,7 +3,7 @@
  * offline. Cache-first for the app shell; network falls back to cache.
  * Bump CACHE when any cached asset changes to force an update.
  */
-const CACHE = "theocube-v2";
+const CACHE = "theocube-v3";
 const ASSETS = [
   ".",
   "index.html",
