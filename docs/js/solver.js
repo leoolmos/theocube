@@ -287,12 +287,12 @@ function solve(scramble) {
     // its centre, then insert it to the right or left with the video's algs.
     // Front face F below means "whichever face the edge is aligned with".
     const RIGHT = {
-      F: "U R U' R' U' F' U F", R: "U B U' B' U' R' U R",
-      B: "U L U' L' U' B' U B", L: "U F U' F' U' L' U L",
+      F: "U R U' R' U2 F' U2 F", R: "U B U' B' U2 R' U2 R",
+      B: "U L U' L' U2 B' U2 B", L: "U F U' F' U2 L' U2 L",
     };
     const LEFT = {
-      F: "U' L' U L U F U' F'", R: "U' F' U F U R U' R'",
-      B: "U' R' U R U B U' B'", L: "U' B' U B U L U' L'",
+      F: "U' L' U L U2 F U2 F'", R: "U' F' U F U2 R U2 R'",
+      B: "U' R' U R U2 B U2 B'", L: "U' B' U B U2 L U2 L'",
     };
     const RIGHT_OF = { F: "R", R: "B", B: "L", L: "F" };
     const US = ["UF", "UR", "UB", "UL"];
@@ -328,8 +328,8 @@ function solve(scramble) {
         // No insertable edge on top → one is stuck wrong in the middle. Run the
         // front-right insert on its slot to kick it up, then the loop re-aligns it.
         const EJECT = {
-          FR: "U R U' R' U' F' U F", FL: "U' L' U L U F U' F'",
-          BR: "U B U' B' U' R' U R", BL: "U' B' U B U L U' L'",
+          FR: "U R U' R' U2 F' U2 F", FL: "U' L' U L U2 F U2 F'",
+          BR: "U B U' B' U2 R' U2 R", BL: "U' B' U B U2 L U2 L'",
         };
         const bad = ["FR", "FL", "BR", "BL"].find((e) => !sv.slEdgeSolved(e));
         if (!bad) break;

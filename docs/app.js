@@ -46,7 +46,7 @@ const TIPS = [
       "Look at the 4 edges on the top layer. Find one with NO purple and NO white — that's a middle-layer edge waiting to be placed.",
       "Spin the top (U) until that edge's FRONT colour matches the centre directly below it (it forms an upside-down T).",
       "Look at the sticker on top of that edge — it points to the side the edge must go.",
-      "Goes RIGHT: U R U' R' U' F' U F.   Goes LEFT: U' L' U L U F U' F'.",
+      "Goes RIGHT: U R U' R' U2 F' U2 F.   Goes LEFT: U' L' U L U2 F U2 F'.",
       "Why it works: U throws the edge away from the slot, then the algorithm tucks it in without breaking the white layer.",
       "No middle edge on top? One is trapped wrong in the middle layer — run either algorithm once to kick it out, then re-align it.",
     ],
@@ -110,8 +110,8 @@ const ALGS = [
   null, // step 3 — first layer (intuitive)
   {     // step 4 — second layer: two insert directions
     variants: [
-      { label: "Edge goes RIGHT →", moves: "U R U' R' U' F' U F" },
-      { label: "Edge goes LEFT ←",  moves: "U' L' U L U F U' F'" },
+      { label: "Edge goes RIGHT →", moves: "U R U' R' U2 F' U2 F" },
+      { label: "Edge goes LEFT ←",  moves: "U' L' U L U2 F U2 F'" },
     ],
   },
   {     // step 5 — purple cross
